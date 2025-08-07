@@ -1,22 +1,20 @@
-from bybit_client import fetch_funding_rates
-from simulator import simulate_pnl
-from config import POSITION_SIZE, FEE_RATE, LEVERAGE, SPREAD_SLIPPAGE_RATE, FUNDING_THRESHOLD
-
+from bybit_client import fetch_funding_rates, fetch_ohlcv
+from simulator import merge_funding_and_price, simulate_realistic_pnl
 
 if __name__ == "__main__":
-    df = fetch_funding_rates("SOLUSDT", days=30)
+    print("[MAIN] Fetching funding data...")
+    funding_df = fetch_funding_rates()
 
-    result_df, pnl, summary = simulate_pnl(
-        df,
-        position_size=POSITION_SIZE,
-        fee_rate=FEE_RATE,
-        leverage=LEVERAGE,
-        slippage_rate=SPREAD_SLIPPAGE_RATE,
-        min_funding=FUNDING_THRESHOLD
-    )
+    print("[MAIN] Fetching OHLCV data...")
+    ohlcv_df = fetch_ohlcv()
 
-    print(result_df.tail())
+    print("[MAIN] Merging data...")
+    merged_df = merge_funding_and_price(funding_df, ohlcv_df)
+
+    print("[MAIN] Simulating PnL...")
+    pnl_df, summary = simulate_realistic_pnl(merged_df)
+
+    print(pnl_df.tail())
     print("\n📊 PnL Breakdown:")
     for k, v in summary.items():
         print(f"{k}: {v:.2f}" if isinstance(v, float) else f"{k}: {v}")
-
