@@ -1,0 +1,17 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.env/
+
+# VSCode config
+.vscode/
+
+# OS generated files
+.DS_Store
+
+# Your sensitive config file
+config.py
